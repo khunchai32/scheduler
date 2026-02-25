@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Service Request Portal - Peak Branding</title>
+    <style>
+        :root {
+            --peak-blue: #00315c;
+            --peak-red: #ce1126;
+            --peak-gray: #53565a;
+            --peak-light: #f2f2f2;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background-color: var(--peak-light); padding: 15px; color: var(--peak-gray); }
+        .form-container { max-width: 600px; margin: auto; background: white; padding: 25px; border-top: 6px solid var(--peak-blue); border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        h2 { color: var(--peak-blue); margin-top: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--peak-light); padding-bottom: 10px; font-size: 1.2em; }
+        
+        .form-group { margin-bottom: 15px; }
+        .flex-row { display: flex; gap: 10px; }
+        .flex-row > div { flex: 1; }
+
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85em; color: var(--peak-blue); }
+        
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; -webkit-appearance: none; }
+        input[type="checkbox"] { width: auto; -webkit-appearance: checkbox; cursor: pointer; }
+        input:focus, select:focus, textarea:focus { border-color: var(--peak-blue); outline: none; box-shadow: 0 0 5px rgba(0,49,92,0.1); }
+
+        .breakdown-box, .travel-box { display: none; background: #fff5f5; padding: 15px; border: 1px solid #ffe3e3; margin-bottom: 15px; border-radius: 4px; }
+        .travel-box { background: #f0f7ff; border-color: #d0e3ff; }
+        
+        button { width: 100%; padding: 16px; background-color: var(--peak-red); color: white; border: none; border-radius: 4px; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: background 0.3s; }
+        button:active { background-color: #a30e1e; transform: scale(0.98); }
+
+        #outputWrapper { margin-top: 25px; }
+        #finalContent { width: 100%; height: 320px; font-family: 'Courier New', monospace; font-size: 14px; background: #fafafa; border: 1px solid #ddd; padding: 12px; line-height: 1.5; color: #333; resize: vertical; }
+        
+        .copy-hint { color: #28a745; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; }
+        .instruction { font-size: 0.8em; color: var(--peak-gray); text-align: center; margin-top: 10px; }
+        
+        .checkbox-container { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Service Request</h2>
+    
+    <div class="form-group">
+        <label>Generator Model</label>
+        <input type="text" id="genModel" placeholder="e.g. Genius">
+    </div>
+
+    <div class="form-group">
+        <label>Serial Number</label>
+        <input type="text" id="serialNumber" placeholder="e.g. XXXXXXXXX">
+    </div>
+
+    <div class="form-group">
+        <div class="flex-row">
+            <div>
+                <label>Service Category</label>
+                <select id="serviceType" onchange="toggleBreakdownFields()">
+                    <option value="">-- Select --</option>
+                    <option value="Complete Contract BD">Complete Contract BD</option>
+                    <option value="Installation">Installation</option>
+                    <option value="Paid breakdown Contract">Paid BD Contract</option>
+                    <option value="Paid breakdown Non Contract">Paid breakdown Non Contract</option>
+                    <option value="Paid PM Non Contract">Paid PM Non Contract</option>
+                    <option value="Planned Maintenance">Planned Maintenance</option>
+                    <option value="Sales Visit">Sales Visit</option>
+                    <option value="IQ/OQ">IQ/OQ</option>
+                    <option value="Tech Support">Tech Support</option>
+                    <option value="Upgrade">Upgrade</option>
+                    <option value="Warranty Breakdown">Warranty Breakdown</option>
+                    <option value="Warranty Parts">Warranty Parts</option>
+                    <option value="Warranty PM">Warranty PM</option>
+                </select>
+            </div>
+            <div>
+                <label>Call Number</label>
+                <input type="text" id="callNumber" placeholder="If you know call no.">
+            </div>
+        </div>
+    </div>
+
+    <div id="breakdownSection" class="breakdown-box">
+        <div class="form-group">
+            <label>Symptom</label>
+            <select id="symptom">
+                <option value="">-- Select Symptom --</option>
+                <option>Assessment</option>
+                <option>Baseline/Sensitivity</option>
+                <option>Burning</option>
+                <option>Component</option>
+                <option>Comps runs Constantly</option>
+                <option>Diagnostics</option>
+                <option>Drain Passing</option>
+                <option>Electrical</option>
+                <option>Escalation</option>
+                <option>Faulty Comp</option>
+                <option>Flow</option>
+                <option>High Duty</option>
+                <option>Install</option>
+                <option>IQ/OQ</option>
+                <option>Leak</option>
+                <option>Low Press</option>
+                <option>Noisy Gen</option>
+                <option>Purity</option>
+                <option>Redundancy</option>
+                <option>Service LED</option>
+                <option>Transit Damage</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Informed Date & Time</label>
+            <input type="datetime-local" id="informedDate">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Kit(s)/ Parts assigned</label>
+        <input type="text" id="kit/Parts" placeholder="e.g. 3300866">
+    </div>
+
+    <div class="checkbox-container">
+        <input type="checkbox" id="travelReq" onchange="toggleTravelField()">
+        <label for="travelReq" style="margin-bottom: 0;">Travelling date required</label>
+    </div>
+
+    <div id="travelSection" class="travel-box">
+        <div class="form-group">
+            <label>Travelling Date & Time</label>
+            <input type="datetime-local" id="travelDate">
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Visit Date & Time</label>
+        <input type="datetime-local" id="visitDate">
+    </div>
+
+    <div class="form-group">
+        <label>Company Name</label>
+        <input type="text" id="companyName" placeholder="Enter Company">
+    </div>
+
+    <div class="form-group">
+        <label>Address</label>
+        <textarea id="address" rows="2" placeholder="Full Address"></textarea>
+    </div>
+
+    <div class="form-group">
+        <div class="flex-row">
+            <div>
+                <label>Customer Name</label>
+                <input type="text" id="customerName" placeholder="Contact Person">
+            </div>
+            <div>
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="Phone">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Customer Email</label>
+        <input type="email" id="customerEmail" placeholder="Email Address">
+    </div>
+
+    <div id="copyHint" class="copy-hint">✓ Copied to clipboard!</div>
+    <button onclick="generateText()">Generate Email Details</button>
+
+    <div id="outputWrapper">
+        <label style="margin-top: 20px;">Generated Content:</label>
+        <textarea id="finalContent" readonly placeholder="The summary will appear here."></textarea>
+        <p class="instruction">Press Ctrl+C (Cmd+C) if auto-copy fails.</p>
+    </div>
+</div>
+
+<script>
+    function toggleBreakdownFields() {
+        const type = document.getElementById('serviceType').value.toLowerCase();
+        const breakdownDiv = document.getElementById('breakdownSection');
+        
+        if (type.includes('breakdown') || type.includes('bd')) {
+            breakdownDiv.style.display = 'block';
+        } else {
+            breakdownDiv.style.display = 'none';
+        }
+    }
+
+    // Logic for the new travel field
+    function toggleTravelField() {
+        const isChecked = document.getElementById('travelReq').checked;
+        document.getElementById('travelSection').style.display = isChecked ? 'block' : 'none';
+    }
+
+    function formatDT(dtStr) {
+        if(!dtStr) return "N/A";
+        const d = new Date(dtStr);
+        if(isNaN(d)) return "N/A";
+        
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        const time = d.toTimeString().split(' ')[0].substring(0, 5);
+        
+        return `${day}-${month}-${year} ${time}`;
+    }
+
+    async function generateText() {
+        const model = document.getElementById('genModel').value;
+        const sn = document.getElementById('serialNumber').value;
+        const service = document.getElementById('serviceType').value;
+        const callNo = document.getElementById('callNumber').value;
+        const symptom = document.getElementById('symptom').value;
+        const infDate = document.getElementById('informedDate').value;
+        const kit = document.getElementById('kitParts').value;
+        
+        const isTravelReq = document.getElementById('travelReq').checked;
+        const travelDate = document.getElementById('travelDate').value;
+        
+        const visitDate = document.getElementById('visitDate').value;
+        const company = document.getElementById('companyName').value;
+        const addr = document.getElementById('address').value;
+        const name = document.getElementById('customerName').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('customerEmail').value;
+
+        let output = `Please help to arrange visit as below.\n`;
+        output += `-----------------------------------\n\n`;
+        output += `EQUIPMENT INFORMATION\n`;
+        output += `Generator Model:  ${model || 'N/A'}\n`;
+        output += `Serial Number:    ${sn || 'N/A'}\n`;
+        output += `Service Category: ${service || 'N/A'}\n`;
+        output += `Call Number:      ${callNo || 'N/A'}\n`;
+
+        if (service.toLowerCase().includes('breakdown') || service.toLowerCase().includes('bd')) {
+            output += `Reported Symptom: ${symptom || 'N/A'}\n`;
+            output += `Informed Date:    ${formatDT(infDate)}\n`;
+        }
+        
+        output += `Kit(s)/Parts:     ${kit || 'N/A'}\n`;
+
+        // Logic to add travel date to output if checked
+        if (isTravelReq) {
+            output += `Travelling Date:  ${formatDT(travelDate)}\n`;
+        }
+
+        output += `Scheduled Visit Date:  ${formatDT(visitDate)}\n\n`;
+
+        output += `LOCATION & CONTACT DETAILS\n`;
+        output += `Company Name:      ${company || 'N/A'}\n`;
+        output += `Address:           ${addr || 'N/A'}\n`;
+        output += `Customer Name:     ${name || 'N/A'}\n`;
+        output += `Phone Number:      ${phone || 'N/A'}\n`;
+        output += `Email Address:     ${email || 'N/A'}\n`;
+        output += `\n-----------------------------------`;
+
+        const finalTextArea = document.getElementById('finalContent');
+        finalTextArea.value = output;
+
+        try {
+            await navigator.clipboard.writeText(output);
+            const hint = document.getElementById('copyHint');
+            hint.style.display = 'block';
+            setTimeout(() => hint.style.display = 'none', 2000);
+        } catch (err) {
+            finalTextArea.select();
+        }
+    }
+</script>
+
+</body>
+</html>
